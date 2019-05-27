@@ -6,6 +6,7 @@
 #include <ostream>
 #include <iomanip>
 #include <queue>
+#include <stack>
 
 
 // add a new node to the graph
@@ -170,7 +171,41 @@ std::string Graph::depthFirst(char name)
 	buffer += name;
 	buffer += "\n";
 	return buffer;
+	buffer += recDepthFirst(nodeList[findNode(name)]);
+	buffer += "\n";
+	buffer += "Unvisited nodes: " + displayUnvisited();
+	resetVisited();
+	return buffer;
+}
 
+std::string Graph::recDepthFirst(Node* tempNode)
+{
+	std::stringstream recBuff;
+
+	if (tempNode != nullptr)
+	{
+		std::stack<Node*> myStack;
+
+		tempNode->visited = true;
+		int nodeKey = findNode(tempNode->name);		// nodeKey
+		recBuff << tempNode->name << " ";
+		myStack.push(tempNode);
+
+		for (int i = 0; i < SIZE; i++)
+		{
+			if ((edgeMatrix[nodeKey][i] == 1) && (nodeList[i]->visited == false))	// if edge exists and not visited
+				recDepthFirst(nodeList[i]);
+		}
+		while (!myStack.empty())
+		{
+			Node* top = myStack.top();
+			myStack.pop();
+			recBuff << recDepthFirst(top);
+		}
+	}
+	else
+		recBuff << "";
+	return recBuff.str();
 }
 
 //Rec func calls can act as stack

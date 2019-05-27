@@ -61,6 +61,7 @@ public:
 	std::string breadthFirst(char name);
 	std::string recBreadthFirst(Node* tempNode);
 	std::string depthFirst(char name);
+	std::string recDepthFirst(Node* tempNode);
 
 private:
 	static const int SIZE = 20;
