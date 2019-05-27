@@ -170,7 +170,6 @@ std::string Graph::depthFirst(char name)
 	std::string buffer = "Depth first traversal starting at ";
 	buffer += name;
 	buffer += "\n";
-	return buffer;
 	buffer += recDepthFirst(nodeList[findNode(name)]);
 	buffer += "\n";
 	buffer += "Unvisited nodes: " + displayUnvisited();
@@ -178,7 +177,7 @@ std::string Graph::depthFirst(char name)
 	return buffer;
 }
 
-std::string Graph::recDepthFirst(Node* tempNode)
+std::string Graph::recDepthFirst(Node* tempNode)		//Rec func calls can act as stack, does not currently
 {
 	std::stringstream recBuff;
 
@@ -194,21 +193,24 @@ std::string Graph::recDepthFirst(Node* tempNode)
 		for (int i = 0; i < SIZE; i++)
 		{
 			if ((edgeMatrix[nodeKey][i] == 1) && (nodeList[i]->visited == false))	// if edge exists and not visited
+			{
+				myStack.push(nodeList[i]);
 				recDepthFirst(nodeList[i]);
+				nodeList[i]->visited = true;
+			}
 		}
 		while (!myStack.empty())
 		{
 			Node* top = myStack.top();
 			myStack.pop();
-			recBuff << recDepthFirst(top);
+			recBuff << tempNode->name << " ";
+
 		}
 	}
 	else
 		recBuff << "";
 	return recBuff.str();
 }
-
-//Rec func calls can act as stack
 
 // breadth first traversal
 // starts at a given node
