@@ -198,12 +198,12 @@ std::string Graph::recDepthFirst(Node* tempNode)
 			{
 				myStack.push(nodeList[i]);
 				nodeList[i]->visited = true;
+
 				buffer += myStack.top()->name;
-				recDepthFirst(nodeList[i]);
+				buffer += " ";
 			}
+			
 		}
-		buffer += top->name;
-		buffer += " ";
 		myStack.pop();
 	}
 	return buffer;
