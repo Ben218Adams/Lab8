@@ -43,9 +43,9 @@ bool Graph::addEdge(char starts, char ends)
 	if (startIndex == -1 or endIndex == -1)
 		return false;
 
-	// set both links in edgeMatrix		since non-directed graph
+	// set both links in edgeMatrix
 	edgeMatrix[startIndex][endIndex] = 1;
-	edgeMatrix[endIndex][startIndex] = 1;		// delete if dir gr
+	edgeMatrix[endIndex][startIndex] = 1;
 
 	// create two new edges (one for each direction)
 	// and add one to each nodes list of edges
@@ -55,11 +55,11 @@ bool Graph::addEdge(char starts, char ends)
 	startEnd->next = nodeList[startIndex]->connects;
 	nodeList[startIndex]->connects = startEnd;
 
-	Edge * endStart = new Edge;			// del all this if directed graph
-	endStart->endIndex = startIndex;	//and this
-	endStart->next = nullptr;			// and this
-	endStart->next = nodeList[endIndex]->connects; //and this
-	nodeList[endIndex]->connects = endStart;		//and this
+	Edge * endStart = new Edge;
+	endStart->endIndex = startIndex;
+	endStart->next = nullptr;
+	endStart->next = nodeList[endIndex]->connects;
+	nodeList[endIndex]->connects = endStart;
 
 	return true;
 }
@@ -165,51 +165,52 @@ std::string Graph::displayUnvisited()
 // starts at a given node
 // outputs a list of nodes visited
 // and a list of any unreached nodes
-
 std::string Graph::depthFirst(char name)
 {
 	std::string buffer = "Depth first traversal starting at ";
 	buffer += name;
 	buffer += "\n";
-	buffer += recDepthFirst(nodeList[ findNode(name) ] );
+	buffer += recDepthFirst(nodeList[findNode(name)]);
 	buffer += "\n";
 	buffer += "Unvisited nodes: " + displayUnvisited();
 	resetVisited();
 	return buffer;
 }
 
-std::string Graph::recDepthFirst(Node* tempNode)
+std::string Graph::recDepthFirst(Node* tempNode)		//Rec func calls can act as stack, does not currently
 {
-	std::string buffer = "";
-	std::stack<Node*> myStack;
+	std::stringstream recBuff;
 
-	int nodeKey = findNode(tempNode->name);
-	nodeList[nodeKey]->visited = true;	// start node visited
-	myStack.push(nodeList[nodeKey]);
-
-	while (!myStack.empty())
+	if (tempNode != nullptr)
 	{
-		Node* top = myStack.top();		// while stack not empty set top
-		int topKey = findNode(top->name);
+		std::stack<Node*> myStack;
 
-		for (int i = 0; i < SIZE / 2; i++)
+		tempNode->visited = true;
+		int nodeKey = findNode(tempNode->name);		// nodeKey
+		recBuff << tempNode->name << " ";
+		myStack.push(tempNode);
+
+		for (int i = 0; i < SIZE; i++)
 		{
-			if ((edgeMatrix[topKey][i] == 1) && (nodeList[i]->visited == false))	// looks at all connections to top
+			if ((edgeMatrix[nodeKey][i] == 1) && (nodeList[i]->visited == false))	// if edge exists and not visited
 			{
 				myStack.push(nodeList[i]);
-				nodeList[i]->visited = true;
-				buffer += myStack.top()->name;
 				recDepthFirst(nodeList[i]);
+				nodeList[i]->visited = true;
 			}
 		}
-		buffer += top->name;
-		buffer += " ";
-		myStack.pop();
+		while (!myStack.empty())
+		{
+			Node* top = myStack.top();
+			myStack.pop();
+			recBuff << tempNode->name << " ";
+
+		}
 	}
-	return buffer;
+	else
+		recBuff << "";
+	return recBuff.str();
 }
-
-
 
 // breadth first traversal
 // starts at a given node
