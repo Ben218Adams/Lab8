@@ -178,33 +178,20 @@ std::string Graph::depthFirst(char name)
 	return buffer;
 }
 
-std::string Graph::recDepthFirst(Node* tempNode)
+std::string Graph::recDepthFirst(Node* tempNode)		// Uses the recursive call stack as stack
 {
 	std::string buffer = "";
-	std::stack<Node*> myStack;
 
 	int nodeKey = findNode(tempNode->name);
 	nodeList[nodeKey]->visited = true;	// start node visited
-	myStack.push(nodeList[nodeKey]);
+	buffer += tempNode->name;
 
-	while (!myStack.empty())
-	{
-		Node* top = myStack.top();		// while stack not empty set top
-		int topKey = findNode(top->name);
-
-		for (int i = 0; i < SIZE / 2; i++)
+	for (int i = 0; i < SIZE / 2; i++)
 		{
-			if ((edgeMatrix[topKey][i] == 1) && (nodeList[i]->visited == false))	// looks at all connections to top
-			{
-				myStack.push(nodeList[i]);
-				nodeList[i]->visited = true;
-
-				buffer += myStack.top()->name;
-				buffer += " ";
-			}
-			
+		if ((edgeMatrix[nodeKey][i] == 1) && (nodeList[i]->visited == false))	// looks at all connections to top
+		{
+		buffer += recDepthFirst(nodeList[i]);		
 		}
-		myStack.pop();
 	}
 	return buffer;
 }
@@ -215,19 +202,23 @@ std::string Graph::recDepthFirst(Node* tempNode)
 // starts at a given node
 // outputs a list of nodes visited
 // and a list of any unreached nodes
-std::string Graph::breadthFirst(char name)
+std::string Graph::breadthFirst(char name)	
 {
 	std::string buffer = "Breadth first traversal starting at ";
 	buffer += name;
 	buffer += "\n";
+
 	buffer += recBreadthFirst(nodeList[findNode(name)]);
+
 	buffer += "\n";
 	buffer += "Unvisited nodes: " + displayUnvisited();
 	resetVisited();
 	return buffer;
 }
 
-std::string Graph::recBreadthFirst(Node* tempNode)	// recursive func calls 
+
+	//Z and K repeat twice
+std::string Graph::recBreadthFirst(Node* tempNode)	// recursive func calls			
 {
 	std::stringstream recBuff;
 
